@@ -9,6 +9,7 @@ const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
 // initialize the gapi
 export function initClient(callback) {
+  console.log(callback);
   gapi.load("client:auth2", () => {
     try {
       gapi.client
@@ -17,6 +18,7 @@ export function initClient(callback) {
           clientId: CLIENT_ID,
           discoveryDocs: DISCOVERY_DOCS,
           scope: SCOPES,
+          plugin_name: "Calendar App",
         })
         .then(
           function () {
@@ -86,6 +88,23 @@ export const getSignedInUserEmail = async () => {
     console.log(error);
   }
 };
+//add event
+export const publishTheCalenderEvent = (event) => {
+  try {
+    gapi.client.load("calendar", "v3", () => {
+      var request = gapi.client.calendar.events.insert({
+        calendarId: "primary",
+        resource: event,
+      });
+
+      request.execute(function (event) {
+        console.log("Event created: " + event.htmlLink);
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //sample event
 // var event = {
@@ -112,19 +131,3 @@ export const getSignedInUserEmail = async () => {
 // };
 
 // put a calendar event to the google calendar
-export const publishTheCalenderEvent = (event) => {
-  try {
-    gapi.client.load("calendar", "v3", () => {
-      var request = gapi.client.calendar.events.insert({
-        calendarId: "primary",
-        resource: event,
-      });
-
-      request.execute(function (event) {
-        console.log("Event created: " + event.htmlLink);
-      });
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
